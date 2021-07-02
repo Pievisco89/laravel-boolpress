@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PostRequest;
 use App\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -16,7 +17,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::paginate(5);
 
         return view('admin.posts.index', compact('posts'));
     }
@@ -37,10 +38,18 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
         $data = $request->all();
         $data['slug'] = Str::slug($data['title'], '-');
+        $slug_exist = Post::where('slug', $data['slug'])->first();
+        $counter = 0;
+        while($slug_exist){
+            $title = $data['title'] . '-' . $counter;
+            $data['slug'] = Str::slug($title, '-');
+            $slug_exist = Post::where('slug', $data['slug'])->first();
+            $counter++;
+        }
         $new_post= new Post();
         $new_post->fill($data);
         $new_post->save();
@@ -84,10 +93,23 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $post)
     {
         $data = $request->all();
-        $data['slug'] = Str::slug($post->title, '-');
+        if($data['slug'] === $post->slug){
+            $data['slug'] = $post->slug;
+        }else{
+            $data['slug'] = Str::slug($data['title'], '-');
+            $slug_exist = Post::where('slug', $data['slug'])->first();
+            $counter = 0;
+            while($slug_exist){
+                $title = $data['title'] . '-' . $counter;
+                $data['slug'] = Str::slug($title, '-');
+                $slug_exist = Post::where('slug', $data['slug'])->first();
+                $counter++;
+            }
+        }
+        
         $post->update($data);
         return redirect()->route('admin.posts.show', $post);
         

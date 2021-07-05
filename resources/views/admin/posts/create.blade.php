@@ -36,6 +36,25 @@
           <p class="text-danger"> {{$message}} </p>
         @enderror
       </div>
+      
+      <div class="mt-2">
+        <label for="category_id" class="form_label mb-2">Category:</label>
+        <select class="form-control @error('category_id') is-invalid @enderror" name="category_id" id="category_id">
+          <option value="">Chose category</option>
+          @foreach ($categories as $category)
+            <option value="{{ $category->id }}"
+              @if(old('category_id') == $category->id)
+                selected    
+              @endif  
+            > 
+              {{ $category->name }}
+            </option>
+          @endforeach
+        </select>
+        @error('category_id')
+          <p class="text-danger"> {{$message}} </p>  
+        @enderror
+      </div>
 
       <div class="d-flex justify-content-between mt-5">
         <a href=" {{ route('admin.posts.index') }} "><< Back</a>

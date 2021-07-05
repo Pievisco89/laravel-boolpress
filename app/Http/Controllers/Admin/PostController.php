@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
 use App\Post;
@@ -29,7 +30,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('admin.posts.create');
+        $categories = Category::all();
+        return view('admin.posts.create', compact('categories'));
     }
 
     /**
@@ -80,8 +82,9 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = Post::find($id);
+        $categories = Category::all();
         if($post){
-            return view('admin.posts.edit', compact('post'));
+            return view('admin.posts.edit', compact('post', 'categories'));
         }
         abort(404);
     }
@@ -96,21 +99,25 @@ class PostController extends Controller
     public function update(PostRequest $request, Post $post)
     {
         $data = $request->all();
-        if($data['slug'] === $post->slug){
-            $data['slug'] = $post->slug;
-        }else{
-            $data['slug'] = Str::slug($data['title'], '-');
-            $slug_exist = Post::where('slug', $data['slug'])->first();
+
+        if($post->title !== $data['title']){
+
+            $slug = Str::slug($data['title'], '-');
+            $slug_exist = Post::where('slug',$slug)->first();
             $counter = 0;
             while($slug_exist){
                 $title = $data['title'] . '-' . $counter;
-                $data['slug'] = Str::slug($title, '-');
-                $slug_exist = Post::where('slug', $data['slug'])->first();
+                $slug = Str::slug($title, '-');
+                $data['slug']  = $slug;
+                $slug_exist = Post::where('slug',$slug)->first();
                 $counter++;
             }
+
+        }else{
+            $data['slug'] = $post->slug;
         }
-        
         $post->update($data);
+        
         return redirect()->route('admin.posts.show', $post);
         
     }

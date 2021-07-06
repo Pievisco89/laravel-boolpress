@@ -15,8 +15,10 @@ class Post extends Model
 
     //creo la relazione tra l'entità Post e l'entità Category
     public function category(){
-        
         return $this->belongsTo('App\Category');
+    }
 
+    public function tags(){
+        return $this->belongsToMany('App\Tag');
     }
 }

@@ -60,6 +60,26 @@
         @enderror
       </div>
 
+      <div>
+        <h6 class="mt-3">Tags:</h6>
+        @foreach ($tags as $tag)
+          <span class="d-inline-block mt-2"> 
+            <input type="checkbox" id="tag{{ $loop->iteration}}"
+              name="tags[]"
+              value=" {{ $tag->id }} "
+              @if (in_array($tag->id, old('tags', [])) && $errors->any())
+                checked
+              @elseif (!$errors->any() && $post->tags->contains($tag->id))          
+                checked
+              @endif
+            >
+            <label for="tag{{ $loop->iteration}}"> {{ $tag->name }} </label>
+          </span>
+
+        @endforeach
+
+      </div>
+
       <div class="d-flex justify-content-between mt-5">
         <a href=" {{ route('admin.posts.index') }} "><< Back</a>
         <button type="submit" class="btn btn-primary">SUBMIT</button>

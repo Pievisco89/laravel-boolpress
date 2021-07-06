@@ -40,7 +40,7 @@
       <div class="mt-2">
         <label for="category_id" class="form_label mb-2">Category:</label>
         <select class="form-control @error('category_id') is-invalid @enderror" name="category_id" id="category_id">
-          <option value="">Chose category</option>
+          <option value="">Choose category</option>
           @foreach ($categories as $category)
             <option value="{{ $category->id }}"
               @if(old('category_id') == $category->id)
@@ -54,6 +54,24 @@
         @error('category_id')
           <p class="text-danger"> {{$message}} </p>  
         @enderror
+      </div>
+
+      <div>
+        <h6 class="mt-3">Tags:</h6>
+        @foreach ($tags as $tag)
+          <span class="d-inline-block mt-2"> 
+            <input type="checkbox" id="tag{{ $loop->iteration}}"
+              name="tags[]"
+              value=" {{ $tag->id }} "
+              @if (in_array($tag->id, old('tags', [])))
+                checked                
+              @endif
+            >
+            <label for="tag{{ $loop->iteration}}"> {{ $tag->name }} </label>
+          </span>
+
+        @endforeach
+
       </div>
 
       <div class="d-flex justify-content-between mt-5">

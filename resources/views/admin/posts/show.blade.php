@@ -14,6 +14,16 @@
       @endif  
     </h4>
 
+    <div class="mb-5">
+
+      @forelse ($post->tags as $tag)
+        <span class="badge badge-primary"> {{ $tag->name }} </span>  
+      @empty
+        Nessun tag
+      @endforelse
+      
+    </div>
+
     <p> {{ $post->content }} </p>
 
     <div>

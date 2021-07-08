@@ -16,8 +16,12 @@ class PostController extends Controller
      */
     public function index()
     {
-        /* $posts = Post::all(); */
+        /* $posts = Post::all(); ------->così prendo tutti i post*/ 
 
+        /* $posts = Post::paginate(3); ------->così prendo tutti i post ma 3 per pagina*/
+
+        /* $posts = Post::with(['category','tags'])->paginate(3);------>altro modo per fare le join */
+        
         $posts = DB::table('posts')
         ->select(
             'posts.id',
@@ -27,7 +31,7 @@ class PostController extends Controller
             'categories.name as category'
         )
         ->join('categories', 'posts.category_id','categories.id')        
-        ->get();
+        ->paginate(3);
 
         return response()->json($posts); 
     }

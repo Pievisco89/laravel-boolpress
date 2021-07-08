@@ -3,14 +3,25 @@
 
       <h2>Blog</h2>
 
-      <div>
+      <!-- loader -->
+      <div 
+        v-if="!loaded"
+        class="text-center mt-4"
+      >
+        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+      </div>
+
+      <!-- lista post -->
+      <div v-if="loaded">
 
         <div 
+          
           v-for="post in posts"
           :key="'p'+post.id"
           class="card mb-4"
         >
           <div class="card-body">
+
             <div class="d-flex justify-content-between">
               <h5 class="card-title"> {{ post.title }} </h5>
               <span class="badge badge-info pv-badge">{{ post.category }}</span>
@@ -22,13 +33,43 @@
           </div>
         </div>
 
-        <nav aria-label="Page navigation example">
+        <!-- pagination -->
+        <nav 
+          aria-label="Page navigation example"
+        >
           <ul class="pagination">
-            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            <li 
+              :class="{'disabled': pagination.current === 1}"
+              class="page-item"
+            >
+              <button 
+                @click="getPost(pagination.current - 1)"
+                class="page-link" href="#"
+              >Previous</button>
+            </li>
+            <li 
+              v-for="i in pagination.last"
+              :key="'i' + i"
+              :class="{'active' : pagination.current === i}"              
+              class="page-item"
+            >
+              <button
+                @click="getPost(i)" 
+                class="page-link" href="#"
+              > 
+                {{i}} 
+              </button>
+            </li>
+            
+            <li 
+              :class="{'disabled': pagination.current === pagination.last}"
+              class="page-item"
+            >
+              <button 
+                @click="getPost(pagination.current + 1)"
+                class="page-link" href="#"
+              >Next</button>
+            </li>
           </ul>
         </nav>
       
@@ -45,15 +86,27 @@
     name: 'Blog',
     data(){
       return {
-        posts: []
+        posts: [],
+        pagination: {},
+        loaded: false
       }
     },
     methods:{
-      getPost(){
-        axios.get('http://127.0.0.1:8000/api/posts')
+      getPost(page = 1){
+        this.loaded = false;
+        axios.get('http://127.0.0.1:8000/api/posts',{
+          params: {
+            page: page,
+          }
+        })
           .then(res => {
-            console.log(res.data.data);
+            //console.log(res.data.data);
             this.posts = res.data.data;
+            this.pagination = {
+              current: res.data.current_page,
+              last: res.data.last_page,
+            }
+            this.loaded = true;
           })
           .catch(err => {
             console.log(err);
@@ -84,5 +137,90 @@
     display: inline-block;
     height: 2rem;
     line-height: 1.5rem;
+  }
+  .lds-roller {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+    color: blue;
+  }
+  .lds-roller div {
+    animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    transform-origin: 40px 40px;
+  }
+  .lds-roller div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgb(0, 0, 0);
+    margin: -4px 0 0 -4px;
+  }
+  .lds-roller div:nth-child(1) {
+    animation-delay: -0.036s;
+  }
+  .lds-roller div:nth-child(1):after {
+    top: 63px;
+    left: 63px;
+  }
+  .lds-roller div:nth-child(2) {
+    animation-delay: -0.072s;
+  }
+  .lds-roller div:nth-child(2):after {
+    top: 68px;
+    left: 56px;
+  }
+  .lds-roller div:nth-child(3) {
+    animation-delay: -0.108s;
+  }
+  .lds-roller div:nth-child(3):after {
+    top: 71px;
+    left: 48px;
+  }
+  .lds-roller div:nth-child(4) {
+    animation-delay: -0.144s;
+  }
+  .lds-roller div:nth-child(4):after {
+    top: 72px;
+    left: 40px;
+  }
+  .lds-roller div:nth-child(5) {
+    animation-delay: -0.18s;
+  }
+  .lds-roller div:nth-child(5):after {
+    top: 71px;
+    left: 32px;
+  }
+  .lds-roller div:nth-child(6) {
+    animation-delay: -0.216s;
+  }
+  .lds-roller div:nth-child(6):after {
+    top: 68px;
+    left: 24px;
+  }
+  .lds-roller div:nth-child(7) {
+    animation-delay: -0.252s;
+  }
+  .lds-roller div:nth-child(7):after {
+    top: 63px;
+    left: 17px;
+  }
+  .lds-roller div:nth-child(8) {
+    animation-delay: -0.288s;
+  }
+  .lds-roller div:nth-child(8):after {
+    top: 56px;
+    left: 12px;
+  }
+  @keyframes lds-roller {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>

@@ -33,7 +33,7 @@ const router = new VueRouter({
       name: 'blog',
       component: Blog
     },
-    { //questa deve essere l'ultima rotta
+    { //questa deve essere sempre l'ultima rotta
       path: '/*', 
       name: 'error404',
       component: Error404

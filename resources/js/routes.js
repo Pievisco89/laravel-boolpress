@@ -11,6 +11,7 @@ import Error404 from './pages/Error404.vue';
 
 const router = new VueRouter({
   mode: 'history',
+  linkExactActiveClass: 'active',
   routes:[
     {
       path: '/',
@@ -32,8 +33,8 @@ const router = new VueRouter({
       name: 'blog',
       component: Blog
     },
-    {
-      path: '/*',
+    { //questa deve essere l'ultima rotta
+      path: '/*', 
       name: 'error404',
       component: Error404
     }

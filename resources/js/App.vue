@@ -2,6 +2,7 @@
   
   <div class="container">
 
+    <Header />
     <!-- per ricevere i componenti iniettati dal router -->
     <router-view></router-view>
 
@@ -11,12 +12,18 @@
 
 <script>
 
+import Header from './components/Header.vue';
 
 export default {
   name: 'App',
+  components: {
+    Header
+  }
 }
 </script>
 
-<style>
+<style lang="scss">
 
+  @import '../sass/frontoffice/global';
+  
 </style>

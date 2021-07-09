@@ -30,9 +30,11 @@
 </template>
 
 <script>
-    export default {
-        mounted() {
-            console.log('Component mounted.')
-        }
+    export default {  
+      name: 'Header'
     }
 </script>
+
+<style lang="scss" scoped>
+
+</style>
